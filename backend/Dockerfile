@@ -10,14 +10,20 @@ RUN apt-get update && apt-get install -y \
     g++ \
     curl \
     wget \
+    git \
     && rm -rf /var/lib/apt/lists/*
+
+# Set pip configuration for better reliability
+ENV PIP_DEFAULT_TIMEOUT=300
+ENV PIP_RETRIES=10
+ENV PIP_TIMEOUT=300
 
 # Copy requirements first for better caching
 COPY requirements.txt /app/requirements.txt
 
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies with retry mechanism
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir --retries 10 --timeout 300 -r requirements.txt
 
 # Copy backend code
 COPY . /app/
