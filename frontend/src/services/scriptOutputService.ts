@@ -50,7 +50,7 @@ export const scriptOutputService = {
 
   // Download script
   async downloadScript(id: number): Promise<Blob> {
-    const response = await fetch(`http://localhost:8000/api/script-output/script/${id}/download`);
+    const response = await fetch(`http://13.232.134.97:8000/api/script-output/script/${id}/download`);
     if (!response.ok) {
       throw new Error('Failed to download script');
     }
@@ -69,7 +69,7 @@ export const scriptOutputService = {
 
   // Export script to different formats
   async exportScript(id: number, format: string): Promise<Blob> {
-    const response = await fetch(`http://localhost:8000/api/script-output/script/${id}/export?format=${format}`);
+    const response = await fetch(`http://13.232.134.97:8000/api/script-output/script/${id}/export?format=${format}`);
     if (!response.ok) {
       throw new Error('Failed to export script');
     }

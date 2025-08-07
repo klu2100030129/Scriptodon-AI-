@@ -1,5 +1,53 @@
 // API Base URL
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://13.232.134.97:8000';
+
+// Utility functions for API calls
+export const get = async <T>(endpoint: string): Promise<T> => {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`);
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+};
+
+export const post = async <T>(endpoint: string, data?: any): Promise<T> => {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: data ? JSON.stringify(data) : undefined,
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+};
+
+export const postFormData = async <T>(endpoint: string, formData: FormData): Promise<T> => {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: 'POST',
+    body: formData,
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+};
+
+export const del = async <T>(endpoint: string): Promise<T> => {
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+};
 
 // API Service for connecting to the Scriptodon Backend
 export class ApiService {
@@ -189,7 +237,7 @@ export class ApiService {
   }
 
   async getScriptReport(scriptId: number): Promise<Blob> {
-    const response = await fetch(`http://localhost:8000/api/script-output/reports/${scriptId}`);
+    const response = await fetch(`http://13.232.134.97:8000/api/script-output/reports/${scriptId}`);
     if (!response.ok) {
       throw new Error('Failed to get script report');
     }

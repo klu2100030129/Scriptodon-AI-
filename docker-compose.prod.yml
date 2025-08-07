@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: scritodon-backend-prod
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./scritodon.db
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENROUTER_SITE_URL=${OPENROUTER_SITE_URL}
+      - OPENROUTER_SITE_NAME=${OPENROUTER_SITE_NAME:-Scriptodon Test Automation Platform}
+      - JIRA_SERVER_URL=${JIRA_SERVER_URL}
+      - JIRA_USERNAME=${JIRA_USERNAME}
+      - JIRA_API_TOKEN=${JIRA_API_TOKEN}
+    volumes:
+      - backend_data:/app/scripts
+      - backend_reports:/app/reports
+      - backend_uploads:/app/uploads
+      - backend_db:/app
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - scritodon-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: scritodon-frontend-prod
+    ports:
+      - "80:3000"
+    environment:
+      - VITE_API_URL=${API_URL:-http://13.232.134.97:8000}
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - scritodon-network
+
+
+
+volumes:
+  backend_data:
+    driver: local
+  backend_reports:
+    driver: local
+  backend_uploads:
+    driver: local
+  backend_db:
+    driver: local
+
+networks:
+  scritodon-network:
+    driver: bridge 

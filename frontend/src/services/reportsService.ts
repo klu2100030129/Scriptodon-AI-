@@ -44,8 +44,8 @@ export const reportsService = {
   },
 
   // Download report
-  async downloadReport(id: number, format: string = 'pdf'): Promise<Blob> {
-    const response = await fetch(`http://localhost:8000/api/reports/report/${id}/download?format=${format}`);
+  async downloadReport(id: number, format: string = 'html'): Promise<Blob> {
+    const response = await fetch(`http://13.232.134.97:8000/api/reports/report/${id}/download?format=${format}`);
     if (!response.ok) {
       throw new Error('Failed to download report');
     }
@@ -53,8 +53,8 @@ export const reportsService = {
   },
 
   // Export report to different formats
-  async exportReport(id: number, format: string): Promise<Blob> {
-    const response = await fetch(`http://localhost:8000/api/reports/report/${id}/export?format=${format}`);
+  async exportReport(id: number, format: string = 'html'): Promise<Blob> {
+    const response = await fetch(`http://13.232.134.97:8000/api/reports/report/${id}/export?format=${format}`);
     if (!response.ok) {
       throw new Error('Failed to export report');
     }
